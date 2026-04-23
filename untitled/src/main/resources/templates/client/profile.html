@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Профиль клиента</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="container mt-4">
+<div class="d-flex justify-content-between">
+    <h2>Профиль клиента</h2>
+    <form th:action="@{/logout}" method="post"><button class="btn btn-danger">Выйти</button></form>
+</div>
+<p>ФИО: <span th:text="${client.fullName}"></span></p>
+<p>Дата рождения: <span th:text="${client.birthDate}"></span></p>
+<a href="/client/create-request" class="btn btn-primary mb-3">Создать заявку</a>
+<table class="table table-bordered">
+    <thead><tr><th>ID</th><th>Статус</th><th>Госномер</th><th>Марка</th><th>Модель</th><th>Дата визита</th></tr></thead>
+    <tbody>
+    <tr th:each="req : ${requests}">
+        <td th:text="${req.id}"></td>
+        <td th:text="${req.status.name}" th:style="'color:' + ${req.status.color}"></td>
+        <td th:text="${req.regNumber}"></td>
+        <td th:text="${req.carMake}"></td>
+        <td th:text="${req.carModel}"></td>
+        <td th:text="${req.visitDate}"></td>
+    </tr>
+    </tbody>
+</table>
+</body>
+</html>

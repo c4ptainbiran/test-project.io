@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Панель сотрудника</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .table td { vertical-align: middle; }
+        .description-cell { max-width: 250px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    </style>
+</head>
+<body class="container mt-4">
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2>Управление заявками</h2>
+    <form th:action="@{/logout}" method="post">
+        <button type="submit" class="btn btn-danger">Выйти</button>
+    </form>
+</div>
+
+<div class="table-responsive">
+    <table class="table table-bordered table-striped">
+        <thead class="table-dark">
+        <tr>
+            <th>ID</th>
+            <th>Клиент</th>
+            <th>Госномер</th>
+            <th>Марка</th>
+            <th>Модель</th>
+            <th>Тип проблемы</th>
+            <th>Описание</th>
+            <th>Телефон</th>
+            <th>Email</th>
+            <th>Дата визита</th>
+            <th>Статус</th>
+            <th>Действия</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="req : ${requests}">
+            <td th:text="${req.id}"></td>
+            <td th:text="${req.client.fullName}"></td>
+            <td th:text="${req.regNumber}"></td>
+            <td th:text="${req.carMake}"></td>
+            <td th:text="${req.carModel}"></td>
+            <td th:text="${req.problemType}"></td>
+            <td class="description-cell" th:text="${req.problemDescription}"></td>
+            <td th:text="${req.phone}"></td>
+            <td th:text="${req.email}"></td>
+            <td th:text="${req.visitDate}"></td>
+            <td th:text="${req.status.name}" th:style="'color:' + ${req.status.color}"></td>
+            <td>
+                <form method="post" th:action="@{/employee/update-status}" style="display:inline-block">
+                    <input type="hidden" name="requestId" th:value="${req.id}">
+                    <select name="statusId" class="form-select form-select-sm d-inline-block w-auto">
+                        <option th:each="s : ${statuses}" th:value="${s.id}" th:text="${s.name}" th:selected="${s.id == req.status.id}"></option>
+                    </select>
+                    <button type="submit" class="btn btn-sm btn-primary">Изменить статус</button>
+                </form>
+                <a th:href="@{/employee/edit/{id}(id=${req.id})}" class="btn btn-sm btn-warning mt-1">Редактировать</a>
+                <form method="post" th:action="@{/employee/delete}" style="display:inline-block"
+                      th:onsubmit="'return confirm(\'Удалить заявку № ' + ${req.id} + '?\');'">
+                    <input type="hidden" name="requestId" th:value="${req.id}">
+                    <button type="submit" class="btn btn-sm btn-danger">Удалить</button>
+                </form>
+            </td>
+        </tr>
+        <tr th:if="${requests.isEmpty()}">
+            <td colspan="12" class="text-center">Нет ни одной заявки</td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+</html>
